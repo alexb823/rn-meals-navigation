@@ -1,5 +1,8 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { StyleSheet, FlatList } from 'react-native';
+
+import { CATEGORIES } from '../data/dummy-data';
+import CategoryGridTile from '../components/CategoryGridTile';
 
 const styles = StyleSheet.create({
   screen: {
@@ -10,11 +13,20 @@ const styles = StyleSheet.create({
 });
 
 const CategoriesScreen = (props) => {
+  const { navigation: {navigate} } = props;
+
+  const renderGridItem = ({ item }) => {
+    const onSelect = () => navigate('CategoryMeals', { category: item });
+    return <CategoryGridTile item={item} onSelect={onSelect} />;
+  };
+
   return (
-    <View style={styles.screen}>
-      <Text>The Categories Screen</Text>
-    </View>
+    <FlatList numColumns={2} data={CATEGORIES} renderItem={renderGridItem} />
   );
+};
+
+CategoriesScreen.navigationOptions = {
+  headerTitle: 'Meal Categories',
 };
 
 export default CategoriesScreen;

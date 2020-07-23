@@ -3,6 +3,9 @@ import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import * as Font from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
+import {enableScreens} from 'react-native-screens';
+
+import MealsNavigator from './navigation/MealsNavigator';
 
 const styles = StyleSheet.create({
   container: {
@@ -14,6 +17,7 @@ const styles = StyleSheet.create({
 });
 
 export default function App() {
+  enableScreens();
   const [appReady, setAppReady] = useState(false);
 
   const prepareResources = async () => {
@@ -40,9 +44,11 @@ export default function App() {
   if (!appReady) return null;
 
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your appp!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <MealsNavigator>
+      <View style={styles.container}>
+        <Text>Open up App.js to start working on your app!</Text>
+        <StatusBar style="auto" />
+      </View>
+    </MealsNavigator>
   );
 }
