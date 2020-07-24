@@ -3,8 +3,10 @@ import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import * as Font from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
-import {enableScreens} from 'react-native-screens';
+import { enableScreens } from 'react-native-screens';
+import { Provider } from 'react-redux';
 
+import store from './store';
 import MealsNavigator from './navigation/MealsNavigator';
 
 const styles = StyleSheet.create({
@@ -44,11 +46,13 @@ export default function App() {
   if (!appReady) return null;
 
   return (
-    <MealsNavigator>
-      <View style={styles.container}>
-        <Text>Open up App.js to start working on your app!</Text>
-        <StatusBar style="auto" />
-      </View>
-    </MealsNavigator>
+    <Provider store={store}>
+      <MealsNavigator>
+        <View style={styles.container}>
+          <Text>Open up App.js to start working on your app!</Text>
+          <StatusBar style="auto" />
+        </View>
+      </MealsNavigator>
+    </Provider>
   );
 }

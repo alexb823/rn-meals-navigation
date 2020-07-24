@@ -1,15 +1,11 @@
-import React from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  Button,
-  ScrollView,
-  Image,
-} from 'react-native';
+import React, { useEffect, useCallback } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { View, Text, StyleSheet, ScrollView, Image } from 'react-native';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
+
 import CustomHeaderButton from '../components/CustomHeaderButton';
 import DefaultText from '../components/DefaultText';
+import { toggleFavorite } from '../store/actions/mealsActions';
 
 const styles = StyleSheet.create({
   image: {
@@ -45,7 +41,23 @@ const ListItem = (props) => {
 
 const MealDetailScreen = ({ navigation }) => {
   const meal = navigation.getParam('item');
-  // console.log(meal);
+  const isFavorite = useSelector((state) =>
+    state.meals.favoriteMeals.some((item) => item.id === meal.id)
+  );
+  const dispatch = useDispatch();
+
+  const handleToggleFav = useCallback(() => {
+    dispatch(toggleFavorite(meal.id));
+  }, [meal]);
+
+  useEffect(() => {
+    navigation.setParams({ handleToggleFav });
+  }, [handleToggleFav]);
+
+  useEffect(() => {
+    navigation.setParams({ isFavorite });
+  }, [isFavorite]);
+
   return (
     <ScrollView>
       <Image style={styles.image} source={{ uri: meal.imageUrl }} />
@@ -69,17 +81,19 @@ const MealDetailScreen = ({ navigation }) => {
 
 MealDetailScreen.navigationOptions = ({ navigation }) => {
   const meal = navigation.getParam('item');
+  const handleToggleFav = navigation.getParam('handleToggleFav');
+  const isFavorite = navigation.getParam('isFavorite');
+  const favIcon = isFavorite ? 'ios-star' : 'ios-star-outline';
+
+  const headerRight = () => (
+    <HeaderButtons HeaderButtonComponent={CustomHeaderButton}>
+      <Item title="Favorite" iconName={favIcon} onPress={handleToggleFav} />
+    </HeaderButtons>
+  );
+
   return {
     headerTitle: meal.title,
-    headerRight: (
-      <HeaderButtons HeaderButtonComponent={CustomHeaderButton}>
-        <Item
-          title="Favorite"
-          iconName="ios-star"
-          onPress={() => console.log('added to Fav')}
-        />
-      </HeaderButtons>
-    ),
+    headerRight,
   };
 };
 
