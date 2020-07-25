@@ -9,6 +9,8 @@ import { Provider } from 'react-redux';
 import store from './store';
 import MealsNavigator from './navigation/MealsNavigator';
 
+enableScreens();
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -19,29 +21,27 @@ const styles = StyleSheet.create({
 });
 
 export default function App() {
-  enableScreens();
   const [appReady, setAppReady] = useState(false);
 
   const prepareResources = async () => {
     await Font.loadAsync({
-      openSans: require('./assets/fonts/OpenSans-Regular.ttf'),
       openSansBold: require('./assets/fonts/OpenSans-Bold.ttf'),
+      openSans: require('./assets/fonts/OpenSans-Regular.ttf'),
     });
     setAppReady(true);
+    await SplashScreen.hideAsync();
   };
 
   useEffect(() => {
-    if (!appReady) {
+    (async () => {
       try {
-        SplashScreen.preventAutoHideAsync();
-      } catch (error) {
-        console.warn(error);
+        await SplashScreen.preventAutoHideAsync();
+      } catch (e) {
+        console.log(e);
       }
       prepareResources();
-    } else {
-      SplashScreen.hideAsync();
-    }
-  }, [appReady]);
+    })()
+  }, []);
 
   if (!appReady) return null;
 
